@@ -182,7 +182,10 @@ var mapType = reflect.ValueOf(map[string]interface{}{}).Type()
 
 // Redirect a request with the given status to the given URL.
 func (d *DefaultContext) Redirect(status int, url string, args ...interface{}) error {
-	d.Flash().persist(d.Session())
+
+	if len(d.Flash().data) > 0 {
+		d.Flash().persist(d.Session())
+	}
 
 	if strings.HasSuffix(url, "Path()") {
 		if len(args) > 1 {
