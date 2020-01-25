@@ -130,7 +130,7 @@ func (d *DefaultContext) Render(status int, rr render.Renderer) error {
 			return HTTPError{Status: http.StatusInternalServerError, Cause: err}
 		}
 
-		if d.Session() != nil {
+		if d.Session() != nil && len(d.Flash().data) > 0 {
 			d.Flash().Clear()
 			d.Flash().persist(d.Session())
 		}
