@@ -1,7 +1,6 @@
 package buffalo
 
 import (
-	"database/sql"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -99,19 +98,15 @@ func (a *App) PanicHandler(next Handler) Handler {
 func (a *App) defaultErrorMiddleware(next Handler) Handler {
 	return func(c Context) error {
 		err := next(c)
+
 		if err == nil {
 			return nil
 		}
 		status := http.StatusInternalServerError
 		// unpack root cause and check for HTTPError
 		cause := errx.Unwrap(err)
-		switch cause {
-		case sql.ErrNoRows:
-			status = http.StatusNotFound
-		default:
-			if h, ok := cause.(HTTPError); ok {
-				status = h.Status
-			}
+		if h, ok := cause.(HTTPError); ok {
+			status = h.Status
 		}
 		payload := events.Payload{
 			"context": c,
