@@ -157,7 +157,7 @@ func newMiddlewareStack(mws ...MiddlewareFunc) *MiddlewareStack {
 }
 
 func funcKey(funcs ...interface{}) string {
-	names := []string{}
+	names := make([]string, 0, len(funcs))
 	for _, f := range funcs {
 		if n, ok := f.(RouteInfo); ok {
 			names = append(names, n.HandlerName)
