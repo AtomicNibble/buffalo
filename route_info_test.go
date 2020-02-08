@@ -28,5 +28,5 @@ func Test_RouteInfo_ServeHTTP_SQL_Error(t *testing.T) {
 	r.Equal(http.StatusOK, res.Code)
 
 	res = w.HTML("/bad").Get()
-	r.Equal(http.StatusNotFound, res.Code)
+	r.Equal(http.StatusInternalServerError, res.Code)
 }
