@@ -242,3 +242,28 @@ func Test_Middleware_Remove(t *testing.T) {
 	_ = w.HTML("/no_log_autos/1").Get()
 	r.Len(log, 0)
 }
+
+func Benchmark_Middleware_funcKey(b *testing.B) {
+
+	mw1 := func(h Handler) Handler {
+		return func(c Context) error {
+			return h(c)
+		}
+	}
+
+	mw2 := func(h Handler) Handler {
+		return func(c Context) error {
+			return h(c)
+		}
+	}
+
+	ri := RouteInfo{
+		HandlerName: "test",
+	}
+
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			_ = funcKey(ri, mw1, mw2)
+		}
+	})
+}
