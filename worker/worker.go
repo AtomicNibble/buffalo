@@ -24,4 +24,6 @@ type Worker interface {
 	PerformIn(Job, time.Duration) error
 	// Register a Handler
 	Register(string, Handler) error
+	// PeriodicallyEnqueue will periodically enqueue jobName according to the cron-based spec.
+	PeriodicallyEnqueue(spec, handlerName string, args Args) error
 }

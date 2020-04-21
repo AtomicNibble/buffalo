@@ -6,6 +6,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/robfig/cron/v3"
+
 	"github.com/markbates/safe"
 	"github.com/sirupsen/logrus"
 )
@@ -33,6 +35,7 @@ func NewSimpleWithContext(ctx context.Context) *Simple {
 		cancel:   cancel,
 		handlers: map[string]Handler{},
 		moot:     &sync.Mutex{},
+		c:        cron.New(),
 	}
 }
 
@@ -44,6 +47,7 @@ type Simple struct {
 	cancel   context.CancelFunc
 	handlers map[string]Handler
 	moot     *sync.Mutex
+	c        *cron.Cron
 }
 
 // Register Handler with the worker
@@ -115,6 +119,26 @@ func (w Simple) PerformIn(job Job, d time.Duration) error {
 			w.cancel()
 		}
 	}()
+	return nil
+}
+
+// PeriodicallyEnqueue will periodically enqueue jobName according to the cron-based spec.
+func (w Simple) PeriodicallyEnqueue(spec, handlerName string, args Args) error {
+	w.c.AddFunc(spec, func() {
+		w.moot.Lock()
+		defer w.moot.Unlock()
+		if h, ok := w.handlers[handlerName]; ok {
+			err := safe.RunE(func() error {
+				return h(args)
+			})
+
+			if err != nil {
+				w.Logger.Error(err)
+			}
+
+			w.Logger.Debugf("Completed cron job %s", handlerName)
+		}
+	})
 	return nil
 }
 
