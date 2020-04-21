@@ -133,12 +133,19 @@ func Test_SetErrorMiddleware(t *testing.T) {
 		res.Write([]byte("i'm a teapot"))
 		return nil
 	})
-	app.GET("/", func(c Context) error {
+	app.GET("/442", func(c Context) error {
 		return c.Error(http.StatusUnprocessableEntity, fmt.Errorf("boom"))
+	})
+	app.GET("/500", func(c Context) error {
+		return c.Error(http.StatusInternalServerError, fmt.Errorf("boom"))
 	})
 
 	w := httptest.New(app)
-	res := w.HTML("/").Get()
+	res := w.HTML("/442").Get()
 	r.Equal(http.StatusTeapot, res.Code)
 	r.Equal("i'm a teapot", res.Body.String())
+
+	res = w.HTML("/500").Get()
+	r.Equal(http.StatusInternalServerError, res.Code)
+	r.NotEqual("i'm a teapot", res.Body.String())
 }
