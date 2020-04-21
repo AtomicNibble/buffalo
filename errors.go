@@ -80,7 +80,7 @@ func (a *App) PanicHandler(next Handler) Handler {
 				default:
 					err = fmt.Errorf(fmt.Sprint(t))
 				}
-				err = err
+
 				events.EmitError(events.ErrPanic, err,
 					map[string]interface{}{
 						"context": c,
