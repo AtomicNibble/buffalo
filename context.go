@@ -66,8 +66,6 @@ func (a *App) newContext(info RouteInfo, res http.ResponseWriter, req *http.Requ
 		}
 	}
 
-	session := a.getSession(req, res)
-
 	ct := httpx.ContentType(req)
 
 	data := &sync.Map{}
@@ -86,14 +84,13 @@ func (a *App) newContext(info RouteInfo, res http.ResponseWriter, req *http.Requ
 	}
 
 	return &DefaultContext{
+		app:         a,
 		Context:     req.Context(),
 		contentType: ct,
 		response:    res,
 		request:     req,
 		params:      params,
 		logger:      a.Logger,
-		session:     session,
-		flash:       newFlash(session),
 		data:        data,
 	}
 }

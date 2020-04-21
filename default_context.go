@@ -27,6 +27,7 @@ var _ context.Context = &DefaultContext{}
 // implementation of the Context interface.
 type DefaultContext struct {
 	context.Context
+	app         *App
 	response    http.ResponseWriter
 	request     *http.Request
 	params      url.Values
@@ -82,6 +83,11 @@ func (d *DefaultContext) Value(key interface{}) interface{} {
 
 // Session for the associated Request.
 func (d *DefaultContext) Session() *Session {
+	if d.session != nil {
+		return d.session
+	}
+
+	d.session = d.app.getSession(d.request, d.response)
 	return d.session
 }
 
@@ -92,6 +98,11 @@ func (d *DefaultContext) Cookies() *Cookies {
 
 // Flash messages for the associated Request.
 func (d *DefaultContext) Flash() *Flash {
+	if d.flash != nil {
+		return d.flash
+	}
+
+	d.flash = newFlash(d.Session())
 	return d.flash
 }
 
@@ -117,7 +128,7 @@ func (d *DefaultContext) Render(status int, rr render.Renderer) error {
 		}
 		data["params"] = pp
 		data["flash"] = d.Flash().data
-		data["session"] = d.Session()
+		// data["session"] = d.Session()
 		data["request"] = d.Request()
 		data["status"] = status
 		bb := &bytes.Buffer{}
@@ -130,9 +141,9 @@ func (d *DefaultContext) Render(status int, rr render.Renderer) error {
 			return HTTPError{Status: http.StatusInternalServerError, Cause: err}
 		}
 
-		if d.Session() != nil && len(d.Flash().data) > 0 {
-			d.Flash().Clear()
-			d.Flash().persist(d.Session())
+		if d.session != nil && d.flash != nil && len(d.flash.data) > 0 {
+			d.flash.Clear()
+			d.flash.persist(d.session)
 		}
 
 		d.Response().Header().Set("Content-Type", rr.ContentType())
@@ -183,7 +194,7 @@ var mapType = reflect.ValueOf(map[string]interface{}{}).Type()
 // Redirect a request with the given status to the given URL.
 func (d *DefaultContext) Redirect(status int, url string, args ...interface{}) error {
 
-	if len(d.Flash().data) > 0 {
+	if d.flash != nil && len(d.flash.data) > 0 {
 		d.Flash().persist(d.Session())
 	}
 
