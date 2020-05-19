@@ -96,6 +96,14 @@ func (a *App) ServeFiles(p string, root http.FileSystem) {
 	a.router.PathPrefix(path).Handler(h)
 }
 
+func (a *App) ServeFilesFromHandler(p string, h http.Handler) {
+	path := path.Join(a.Prefix, p)
+	a.filepaths = append(a.filepaths, path)
+
+	h = stripAsset(path, h, a)
+	a.router.PathPrefix(path).Handler(h)
+}
+
 func (a *App) fileServer(fs http.FileSystem) http.Handler {
 	fsh := http.FileServer(fs)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
