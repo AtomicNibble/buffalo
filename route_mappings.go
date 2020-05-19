@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 	"path"
 	"reflect"
 	"sort"
@@ -100,16 +99,7 @@ func (a *App) ServeFiles(p string, root http.FileSystem) {
 func (a *App) fileServer(fs http.FileSystem) http.Handler {
 	fsh := http.FileServer(fs)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		f, err := fs.Open(path.Clean(r.URL.Path))
-		if os.IsNotExist(err) {
-			eh := a.ErrorHandlers.Get(http.StatusNotFound)
-			eh(http.StatusNotFound, fmt.Errorf("could not find %s", r.URL.Path), a.newContext(RouteInfo{}, w, r))
-			return
-		}
-
-		stat, _ := f.Stat()
 		maxAge := envy.Get(AssetsAgeVarName, "31536000")
-		w.Header().Add("ETag", fmt.Sprintf("%x", stat.ModTime().UnixNano()))
 		w.Header().Add("Cache-Control", fmt.Sprintf("max-age=%s", maxAge))
 		fsh.ServeHTTP(w, r)
 	})
