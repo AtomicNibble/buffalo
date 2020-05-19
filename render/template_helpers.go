@@ -48,7 +48,7 @@ func assetPathFor(file string) string {
 	if filePath == "" || !ok {
 		filePath = file
 	}
-	return filepath.ToSlash(filepath.Join("/assets", filePath))
+	return filepath.ToSlash(filePath)
 }
 
 func loadManifest(manifest string) error {
