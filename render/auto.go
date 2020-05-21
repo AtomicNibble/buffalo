@@ -128,10 +128,10 @@ func (ir htmlAutoRenderer) Render(w io.Writer, data Data) error {
 		return defCase()
 	}
 
-	if strings.HasSuffix(cp, "/edit/") {
+	if strings.HasSuffix(cp, "/edit") {
 		return ir.HTML(fmt.Sprintf("%s/edit.html", templatePrefix)).Render(w, data)
 	}
-	if strings.HasSuffix(cp, "/new/") {
+	if strings.HasSuffix(cp, "/new") {
 		return ir.HTML(fmt.Sprintf("%s/new.html", templatePrefix)).Render(w, data)
 	}
 

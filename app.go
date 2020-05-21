@@ -44,7 +44,7 @@ func New(opts Options) *App {
 			http.StatusNotFound:            defaultErrorHandler,
 			http.StatusInternalServerError: defaultErrorHandler,
 		},
-		router:   mux.NewRouter(),
+		router:   mux.NewRouter().StrictSlash(!opts.LooseSlash),
 		moot:     &sync.RWMutex{},
 		routes:   RouteList{},
 		children: []*App{},

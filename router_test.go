@@ -27,9 +27,7 @@ func testApp() *App {
 	rt := a.Group("/router/tests")
 
 	h := func(c Context) error {
-		x := c.Request().Method + "|"
-		x += strings.TrimSuffix(c.Value("current_path").(string), "/")
-		return c.Render(http.StatusOK, render.String(x))
+		return c.Render(200, render.String(c.Request().Method+"|"+c.Value("current_path").(string)))
 	}
 
 	rt.GET("/", h)
@@ -99,7 +97,7 @@ func Test_Mount_Buffalo(t *testing.T) {
 		res, err := http.DefaultClient.Do(req)
 		r.NoError(err)
 		b, _ := ioutil.ReadAll(res.Body)
-		r.Equal(fmt.Sprintf("%s - %s/", m, u), string(b))
+		r.Equal(fmt.Sprintf("%s - %s", m, u), string(b))
 	}
 }
 
@@ -124,7 +122,7 @@ func Test_Mount_Buffalo_on_Group(t *testing.T) {
 		res, err := http.DefaultClient.Do(req)
 		r.NoError(err)
 		b, _ := ioutil.ReadAll(res.Body)
-		r.Equal(fmt.Sprintf("%s - %s/", m, u), string(b))
+		r.Equal(fmt.Sprintf("%s - %s", m, u), string(b))
 	}
 }
 
@@ -133,9 +131,9 @@ func muxer() http.Handler {
 		fmt.Fprintf(res, "%s - %s", req.Method, req.URL.String())
 	}
 	mux := mux.NewRouter()
-	mux.HandleFunc("/foo/", f).Methods("GET")
-	mux.HandleFunc("/bar/", f).Methods("POST")
-	mux.HandleFunc("/baz/baz/", f).Methods("DELETE")
+	mux.HandleFunc("/foo", f).Methods("GET")
+	mux.HandleFunc("/bar", f).Methods("POST")
+	mux.HandleFunc("/baz/baz", f).Methods("DELETE")
 	return mux
 }
 
@@ -159,7 +157,7 @@ func Test_Mount_Handler(t *testing.T) {
 		res, err := http.DefaultClient.Do(req)
 		r.NoError(err)
 		b, _ := ioutil.ReadAll(res.Body)
-		r.Equal(fmt.Sprintf("%s - %s/", m, u), string(b))
+		r.Equal(fmt.Sprintf("%s - %s", m, u), string(b))
 	}
 }
 
@@ -189,7 +187,7 @@ func Test_PreHandlers(t *testing.T) {
 		Result string
 	}{
 		{Code: http.StatusTeapot, Method: "GET", Result: "boo"},
-		{Code: http.StatusOK, Method: "POST", Result: "POST-/ph/"},
+		{Code: http.StatusOK, Method: "POST", Result: "POST-/ph"},
 	}
 
 	for _, v := range table {
@@ -234,7 +232,7 @@ func Test_PreWares(t *testing.T) {
 		Result string
 	}{
 		{Code: http.StatusTeapot, Method: "GET", Result: "boo"},
-		{Code: http.StatusOK, Method: "POST", Result: "POST-/ph/"},
+		{Code: http.StatusOK, Method: "POST", Result: "POST-/ph"},
 	}
 
 	for _, v := range table {
@@ -448,7 +446,7 @@ func Test_App_NamedRoutes(t *testing.T) {
 	r.Contains(res.Body.String(), "5. /car/1")
 	r.Contains(res.Body.String(), "6. /car/new")
 	r.Contains(res.Body.String(), "7. /car/1/edit")
-	r.Contains(res.Body.String(), "8. /car/1/edit/?other=12")
+	r.Contains(res.Body.String(), "8. /car/1/edit?other=12")
 	r.Contains(res.Body.String(), "9. /?other=12&some=variable")
 	r.Contains(res.Body.String(), "10. /")
 	r.Contains(res.Body.String(), "11. /?special%2F=12%3Dss")
@@ -569,7 +567,7 @@ func Test_Resource_ParamKey(t *testing.T) {
 	for _, rr := range rt {
 		paths = append(paths, rr.Path)
 	}
-	r.Contains(paths, "/foo/{bazKey}/edit/")
+	r.Contains(paths, "/foo/{bazKey}/edit")
 }
 
 type mwResource struct {
@@ -765,13 +763,13 @@ func Test_Router_Matches_Trailing_Slash(t *testing.T) {
 		browser  string
 		expected string
 	}{
-		{"/foo", "/foo", "/foo/"},
-		{"/foo", "/foo/", "/foo/"},
-		{"/foo/", "/foo", "/foo/"},
-		{"/foo/", "/foo/", "/foo/"},
-		{"/index.html", "/index.html", "/index.html/"},
-		{"/foo.gif", "/foo.gif", "/foo.gif/"},
-		{"/{img}", "/foo.png", "/foo.png/"},
+		{"/foo", "/foo", "/foo"},
+		{"/foo", "/foo/", "/foo"},
+		{"/foo/", "/foo", "/foo"},
+		{"/foo/", "/foo/", "/foo"},
+		{"/index.html", "/index.html", "/index.html"},
+		{"/foo.gif", "/foo.gif", "/foo.gif"},
+		{"/{img}", "/foo.png", "/foo.png"},
 	}
 
 	for _, tt := range table {

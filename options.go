@@ -65,6 +65,10 @@ type Options struct {
 	Prefix  string          `json:"prefix"`
 	Context context.Context `json:"-"`
 
+	// LooseSlash defines the trailing slash behavior for new routes. The initial value is false.
+	// This is the opposite of http://www.gorillatoolkit.org/pkg/mux#Router.StrictSlash
+	LooseSlash bool
+
 	cancel context.CancelFunc
 }
 

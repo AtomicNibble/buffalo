@@ -253,7 +253,6 @@ func (a *App) addRoute(method string, url string, h Handler) *RouteInfo {
 	defer a.moot.Unlock()
 
 	url = path.Join(a.Prefix, url)
-	url = a.normalizePath(url)
 	name := a.buildRouteName(url)
 
 	hs := funcKey(h)
