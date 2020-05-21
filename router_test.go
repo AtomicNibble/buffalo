@@ -342,7 +342,6 @@ func Test_Router_ServeFiles(t *testing.T) {
 	r.Equal(http.StatusOK, res.Code)
 	r.Equal("foo", res.Body.String())
 
-	r.NotEqual(res.Header().Get("ETag"), "")
 	r.Equal(res.Header().Get("Cache-Control"), "max-age=31536000")
 
 	envy.Set(AssetsAgeVarName, "3600")
@@ -352,7 +351,6 @@ func Test_Router_ServeFiles(t *testing.T) {
 	r.Equal(http.StatusOK, res.Code)
 	r.Equal("foo", res.Body.String())
 
-	r.NotEqual(res.Header().Get("ETag"), "")
 	r.Equal(res.Header().Get("Cache-Control"), "max-age=3600")
 }
 
