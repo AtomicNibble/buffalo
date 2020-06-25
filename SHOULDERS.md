@@ -165,7 +165,7 @@ Thank you to the following **GIANTS**:
 
 * [github.com/gobuffalo/syncx](https://godoc.org/github.com/gobuffalo/syncx)
 
-* [github.com/gobuffalo/tags](https://godoc.org/github.com/gobuffalo/tags)
+* [github.com/gobuffalo/tags/v3](https://godoc.org/github.com/gobuffalo/tags/v3)
 
 * [github.com/gobuffalo/uuid](https://godoc.org/github.com/gobuffalo/uuid)
 

@@ -11,7 +11,7 @@ require (
 	github.com/gobuffalo/clara v0.9.1
 	github.com/gobuffalo/envy v1.8.1
 	github.com/gobuffalo/events v1.4.0
-	github.com/gobuffalo/flect v0.1.7
+	github.com/gobuffalo/flect v0.2.0
 	github.com/gobuffalo/genny v0.4.1
 	github.com/gobuffalo/github_flavored_markdown v1.1.0
 	github.com/gobuffalo/helpers v0.4.0
@@ -25,7 +25,7 @@ require (
 	github.com/gobuffalo/plush v3.8.3+incompatible
 	github.com/gobuffalo/pop v4.12.2+incompatible
 	github.com/gobuffalo/release v1.15.0
-	github.com/gobuffalo/tags v2.1.7+incompatible
+	github.com/gobuffalo/tags/v3 v3.1.0
 	github.com/google/go-cmp v0.3.1
 	github.com/gorilla/mux v1.7.3
 	github.com/gorilla/sessions v1.2.0
