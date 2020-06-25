@@ -36,7 +36,6 @@ require (
 	github.com/markbates/safe v1.0.1
 	github.com/markbates/sigtx v1.0.0
 	github.com/monoculum/formam v0.0.0-20190830100315-7ff9597b1407
-	github.com/robfig/cron/v3 v3.0.0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.5
