@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"html/template"
 	"path/filepath"
+	"sync"
 
 	ht "github.com/gobuffalo/helpers/tags"
 	"github.com/gobuffalo/tags/v3"
@@ -41,6 +42,8 @@ func (s *templateRenderer) addAssetsHelpers(helpers Helpers) Helpers {
 	return helpers
 }
 
+var assetMapLoaded = int32(0)
+var assetMapLock = sync.Mutex{}
 var assetMap = stringMap{}
 
 func assetPathFor(file string) string {
