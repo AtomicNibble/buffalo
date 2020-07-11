@@ -33,10 +33,10 @@ func Test_AssetPath(t *testing.T) {
 	}`))
 
 	cases := map[string]string{
-		"something.txt":         "/assets/something.txt",
-		"images/something.png":  "/assets/images/something.png",
-		"/images/something.png": "/assets/images/something.png",
-		"application.css":       "/assets/application.aabbc123.css",
+		"something.txt":         "something.txt",
+		"images/something.png":  "images/something.png",
+		"/images/something.png": "/images/something.png",
+		"application.css":       "application.aabbc123.css",
 	}
 
 	for original, expected := range cases {
@@ -58,7 +58,7 @@ func Test_AssetPathNoManifest(t *testing.T) {
 	e := NewEngine()
 
 	cases := map[string]string{
-		"something.txt": "/assets/something.txt",
+		"something.txt": "something.txt",
 	}
 
 	for original, expected := range cases {
