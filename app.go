@@ -39,15 +39,12 @@ func New(opts Options) *App {
 	opts = optionsWithDefaults(opts)
 
 	a := &App{
-		Options: opts,
-		ErrorHandlers: ErrorHandlers{
-			http.StatusNotFound:            defaultErrorHandler,
-			http.StatusInternalServerError: defaultErrorHandler,
-		},
-		router:   mux.NewRouter().StrictSlash(!opts.LooseSlash),
-		moot:     &sync.RWMutex{},
-		routes:   RouteList{},
-		children: []*App{},
+		Options:       opts,
+		ErrorHandlers: ErrorHandlers{},
+		router:        mux.NewRouter().StrictSlash(!opts.LooseSlash),
+		moot:          &sync.RWMutex{},
+		routes:        RouteList{},
+		children:      []*App{},
 	}
 
 	dem := a.defaultErrorMiddleware
