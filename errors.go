@@ -117,19 +117,21 @@ func (a *App) defaultErrorMiddleware(next Handler) Handler {
 
 		eh := a.ErrorHandlers.Get(status)
 		err = eh(status, err, c)
-		if err != nil {
-			events.Emit(events.Event{
-				Kind:    EvtFailureErr,
-				Message: "unable to handle error and giving up",
-				Error:   err,
-				Payload: payload,
-			})
-			// things have really hit the fan if we're here!!
-			a.Logger.Error(err)
-			c.Response().WriteHeader(http.StatusInternalServerError)
-			c.Response().Write([]byte(err.Error()))
+		if err == nil {
+			return nil
 		}
-		return nil
+
+		// things have really hit the fan if we're here!!
+		events.Emit(events.Event{
+			Kind:    EvtFailureErr,
+			Message: "unable to handle error and giving up",
+			Error:   err,
+			Payload: payload,
+		})
+		a.Logger.Error(err)
+		c.Response().WriteHeader(http.StatusInternalServerError)
+		c.Response().Write([]byte(err.Error()))
+		return err
 	}
 }
 
