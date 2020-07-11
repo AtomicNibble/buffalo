@@ -23,11 +23,11 @@ type templateRenderer struct {
 	reloadManifest bool
 }
 
-func (s templateRenderer) ContentType() string {
+func (s *templateRenderer) ContentType() string {
 	return s.contentType
 }
 
-func (s templateRenderer) resolve(name string) ([]byte, error) {
+func (s *templateRenderer) resolve(name string) ([]byte, error) {
 	if s.TemplatesBox == nil {
 		return nil, fmt.Errorf("no templates box is defined")
 	}
@@ -102,7 +102,7 @@ func fixExtension(name string, ct string) string {
 // partialFeeder returns template string for the name from `TemplateBox`.
 // It should be registered as helper named `partialFeeder` so plush can
 // find it with the name.
-func (s templateRenderer) partialFeeder(name string) (string, error) {
+func (s *templateRenderer) partialFeeder(name string) (string, error) {
 	ct := strings.ToLower(s.contentType)
 
 	d, f := filepath.Split(name)
@@ -113,7 +113,7 @@ func (s templateRenderer) partialFeeder(name string) (string, error) {
 	return string(b), err
 }
 
-func (s templateRenderer) exec(name string, data Data) (template.HTML, error) {
+func (s *templateRenderer) exec(name string, data Data) (template.HTML, error) {
 	ct := strings.ToLower(s.contentType)
 	data["contentType"] = ct
 
@@ -179,7 +179,7 @@ func (s templateRenderer) exec(name string, data Data) (template.HTML, error) {
 	return template.HTML(body), nil
 }
 
-func (s templateRenderer) exts(name string) []string {
+func (s *templateRenderer) exts(name string) []string {
 	exts := []string{}
 	for {
 		ext := filepath.Ext(name)
@@ -196,7 +196,7 @@ func (s templateRenderer) exts(name string) []string {
 	return exts
 }
 
-func (s templateRenderer) assetPath(file string) (string, error) {
+func (s *templateRenderer) assetPath(file string) (string, error) {
 	if len(assetMap.Keys()) == 0 || s.reloadManifest {
 		manifest, err := s.AssetsBox.FindString("manifest.json")
 

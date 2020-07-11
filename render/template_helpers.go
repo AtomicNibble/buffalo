@@ -14,7 +14,7 @@ type helperTag struct {
 	fn   func(string, tags.Options) template.HTML
 }
 
-func (s templateRenderer) addAssetsHelpers(helpers Helpers) Helpers {
+func (s *templateRenderer) addAssetsHelpers(helpers Helpers) Helpers {
 	helpers["assetPath"] = s.assetPath
 
 	ah := []helperTag{
