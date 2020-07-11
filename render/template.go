@@ -7,7 +7,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"sync/atomic"
 
 	"github.com/gobuffalo/buffalo/internal/takeon/github.com/gobuffalo/syncx"
 	"github.com/gobuffalo/buffalo/internal/takeon/github.com/markbates/errx"
@@ -199,33 +198,17 @@ func (s *templateRenderer) exts(name string) []string {
 
 func (s *templateRenderer) assetPath(file string) (string, error) {
 	if assetMapLoaded == 0 || s.reloadManifest {
-		// Only load it once, if race
-		assetMapLock.Lock()
-		defer assetMapLock.Unlock()
-
-		if assetMapLoaded == 0 || s.reloadManifest {
-
-			s.reloadManifest = false
-			atomic.CompareAndSwapInt32(&assetMapLoaded, 0, 1)
-
-			manifest, err := s.AssetsBox.FindString("manifest.json")
-
-			if err != nil {
-				manifest, err = s.AssetsBox.FindString("assets/manifest.json")
-				if err != nil {
-					return assetPathFor(file), nil
-				}
-			}
-
-			err = loadManifest(manifest)
-			if err != nil {
-				return assetPathFor(file), fmt.Errorf("your manifest.json is not correct: %s", err)
-			}
+		err := s.loadManifest(s.reloadManifest)
+		if err != nil {
+			return AssetPathFor(file), err
 		}
+
+		s.reloadManifest = false
 	}
 
-	return assetPathFor(file), nil
+	return AssetPathFor(file), nil
 }
+
 // Template renders the named files using the specified
 // content type and the github.com/gobuffalo/plush
 // package for templating. If more than 1 file is provided

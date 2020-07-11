@@ -17,7 +17,7 @@ type Engine struct {
 
 // New render.Engine ready to go with your Options
 // and some defaults we think you might like.
-func New(opts Options) *Engine {
+func New(opts Options) (*Engine, error) {
 	if opts.Helpers == nil {
 		opts.Helpers = Helpers{}
 	}
@@ -58,7 +58,15 @@ func New(opts Options) *Engine {
 	e := &Engine{
 		Options: opts,
 	}
-	return e
+
+	if e.AssetsBox != nil {
+		err := e.loadManifest(false)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return e, nil
 }
 
 func defaultHelpers() Helpers {

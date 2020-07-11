@@ -46,7 +46,8 @@ var assetMapLoaded = int32(0)
 var assetMapLock = sync.Mutex{}
 var assetMap = stringMap{}
 
-func assetPathFor(file string) string {
+// AssetPathFor will map asset paths to manifest paths
+func AssetPathFor(file string) string {
 	filePath, ok := assetMap.Load(file)
 	if filePath == "" || !ok {
 		filePath = file
@@ -64,5 +65,29 @@ func loadManifest(manifest string) error {
 	for k, v := range m {
 		assetMap.Store(k, v)
 	}
+	return nil
+}
+
+func (e *Engine) loadManifest(force bool) error {
+	// Only load it once, if race
+	assetMapLock.Lock()
+	defer assetMapLock.Unlock()
+
+	if assetMapLoaded == 1 && !force {
+		return nil
+	}
+
+	assetMapLoaded = 1
+
+	manifest, err := e.AssetsBox.FindString("assets/manifest.json")
+	if err != nil {
+		return err
+	}
+
+	err = loadManifest(manifest)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
