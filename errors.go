@@ -98,7 +98,6 @@ func (a *App) PanicHandler(next Handler) Handler {
 func (a *App) defaultErrorMiddleware(next Handler) Handler {
 	return func(c Context) error {
 		err := next(c)
-
 		if err == nil {
 			return nil
 		}
