@@ -40,26 +40,6 @@ POST /users - (redirect to /users/id or render user/new.html)
 PUT /users/edit - (redirect to /users/id or render user/edit.html)
 DELETE /users/id - redirect to /users
 */
-func Auto(ctx context.Context, i interface{}) Renderer {
-	e := New(Options{})
-	return e.Auto(ctx, i)
-}
-
-// Auto figures out how to render the model based information
-// about the request and the name of the model. Auto supports
-// automatic rendering of HTML, JSON, and XML. Any status code
-// give to Context#Render between 300 - 400 will be respected
-// by Auto. Other status codes are not.
-/*
-# Rules for HTML template lookup:
-GET /users - users/index.html
-GET /users/id - users/show.html
-GET /users/new - users/new.html
-GET /users/id/edit - users/edit.html
-POST /users - (redirect to /users/id or render user/new.html)
-PUT /users/edit - (redirect to /users/id or render user/edit.html)
-DELETE /users/id - redirect to /users
-*/
 func (e *Engine) Auto(ctx context.Context, i interface{}) Renderer {
 	ct, _ := ctx.Value("contentType").(string)
 	if ct == "" {

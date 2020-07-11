@@ -226,18 +226,6 @@ func (s *templateRenderer) assetPath(file string) (string, error) {
 
 	return assetPathFor(file), nil
 }
-
-// Template renders the named files using the specified
-// content type and the github.com/gobuffalo/plush
-// package for templating. If more than 1 file is provided
-// the second file will be considered a "layout" file
-// and the first file will be the "content" file which will
-// be placed into the "layout" using "{{yield}}".
-func Template(c string, names ...string) Renderer {
-	e := New(Options{})
-	return e.Template(c, names...)
-}
-
 // Template renders the named files using the specified
 // content type and the github.com/gobuffalo/plush
 // package for templating. If more than 1 file is provided

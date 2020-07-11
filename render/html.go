@@ -13,17 +13,6 @@ import (
 // package for templating. If more than 1 file is provided
 // the second file will be considered a "layout" file
 // and the first file will be the "content" file which will
-// be placed into the "layout" using "<%= yield %>".
-func HTML(names ...string) Renderer {
-	e := New(Options{})
-	return e.HTML(names...)
-}
-
-// HTML renders the named files using the 'text/html'
-// content type and the github.com/gobuffalo/plush
-// package for templating. If more than 1 file is provided
-// the second file will be considered a "layout" file
-// and the first file will be the "content" file which will
 // be placed into the "layout" using "<%= yield %>". If no
 // second file is provided and an `HTMLLayout` is specified
 // in the options, then that layout file will be used
