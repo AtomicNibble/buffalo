@@ -1,6 +1,6 @@
 package render
 
-import "os"
+import "github.com/gobuffalo/envy"
 
 // JavaScript renders the named files using the 'application/javascript'
 // content type and the github.com/gobuffalo/plush
@@ -30,7 +30,7 @@ func (e *Engine) JavaScript(names ...string) Renderer {
 		Engine:         e,
 		contentType:    "application/javascript",
 		names:          names,
-		reloadManifest: os.Getenv("GO_ENV") != "production",
+		reloadManifest: envy.Get("GO_ENV", "development") != "production",
 	}
 	return hr
 }

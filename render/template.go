@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"html/template"
 	"io"
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/gobuffalo/buffalo/internal/takeon/github.com/gobuffalo/syncx"
 	"github.com/gobuffalo/buffalo/internal/takeon/github.com/markbates/errx"
+	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/packd"
 	"github.com/sirupsen/logrus"
 )
@@ -250,6 +250,6 @@ func (e *Engine) Template(c string, names ...string) Renderer {
 		contentType:    c,
 		names:          names,
 		aliases:        syncx.StringMap{},
-		reloadManifest: os.Getenv("GO_ENV") != "production",
+		reloadManifest: envy.Get("GO_ENV", "development") != "production",
 	}
 }

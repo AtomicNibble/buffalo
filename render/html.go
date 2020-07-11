@@ -2,8 +2,8 @@ package render
 
 import (
 	"html"
-	"os"
 
+	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/github_flavored_markdown"
 	"github.com/gobuffalo/plush"
 )
@@ -36,7 +36,7 @@ func (e *Engine) HTML(names ...string) Renderer {
 		Engine:         e,
 		contentType:    "text/html; charset=utf-8",
 		names:          names,
-		reloadManifest: os.Getenv("GO_ENV") != "production",
+		reloadManifest: envy.Get("GO_ENV", "development") != "production",
 	}
 	return hr
 }

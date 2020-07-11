@@ -1,6 +1,6 @@
 package render
 
-import "os"
+import "github.com/gobuffalo/envy"
 
 // Plain renders the named files using the 'text/html'
 // content type and the github.com/gobuffalo/plush
@@ -24,7 +24,7 @@ func (e *Engine) Plain(names ...string) Renderer {
 		Engine:         e,
 		contentType:    "text/plain; charset=utf-8",
 		names:          names,
-		reloadManifest: os.Getenv("GO_ENV") != "production",
+		reloadManifest: envy.Get("GO_ENV", "development") != "production",
 	}
 	return hr
 }
