@@ -17,9 +17,10 @@ import (
 
 type templateRenderer struct {
 	*Engine
-	contentType string
-	names       []string
-	aliases     syncx.StringMap
+	contentType    string
+	names          []string
+	aliases        syncx.StringMap
+	reloadManifest bool
 }
 
 func (s templateRenderer) ContentType() string {
@@ -196,8 +197,7 @@ func (s templateRenderer) exts(name string) []string {
 }
 
 func (s templateRenderer) assetPath(file string) (string, error) {
-
-	if len(assetMap.Keys()) == 0 || os.Getenv("GO_ENV") != "production" {
+	if len(assetMap.Keys()) == 0 || s.reloadManifest {
 		manifest, err := s.AssetsBox.FindString("manifest.json")
 
 		if err != nil {
@@ -235,9 +235,10 @@ func Template(c string, names ...string) Renderer {
 // be placed into the "layout" using "{{yield}}".
 func (e *Engine) Template(c string, names ...string) Renderer {
 	return &templateRenderer{
-		Engine:      e,
-		contentType: c,
-		names:       names,
-		aliases:     syncx.StringMap{},
+		Engine:         e,
+		contentType:    c,
+		names:          names,
+		aliases:        syncx.StringMap{},
+		reloadManifest: os.Getenv("GO_ENV") != "production",
 	}
 }

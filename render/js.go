@@ -1,5 +1,7 @@
 package render
 
+import "os"
+
 // JavaScript renders the named files using the 'application/javascript'
 // content type and the github.com/gobuffalo/plush
 // package for templating. If more than 1 file is provided
@@ -25,9 +27,10 @@ func (e *Engine) JavaScript(names ...string) Renderer {
 		names = append(names, e.JavaScriptLayout)
 	}
 	hr := &templateRenderer{
-		Engine:      e,
-		contentType: "application/javascript",
-		names:       names,
+		Engine:         e,
+		contentType:    "application/javascript",
+		names:          names,
+		reloadManifest: os.Getenv("GO_ENV") != "production",
 	}
 	return hr
 }

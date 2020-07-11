@@ -2,6 +2,7 @@ package render
 
 import (
 	"html"
+	"os"
 
 	"github.com/gobuffalo/github_flavored_markdown"
 	"github.com/gobuffalo/plush"
@@ -32,9 +33,10 @@ func (e *Engine) HTML(names ...string) Renderer {
 		names = append(names, e.HTMLLayout)
 	}
 	hr := &templateRenderer{
-		Engine:      e,
-		contentType: "text/html; charset=utf-8",
-		names:       names,
+		Engine:         e,
+		contentType:    "text/html; charset=utf-8",
+		names:          names,
+		reloadManifest: os.Getenv("GO_ENV") != "production",
 	}
 	return hr
 }

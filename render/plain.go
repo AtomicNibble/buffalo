@@ -1,5 +1,7 @@
 package render
 
+import "os"
+
 // Plain renders the named files using the 'text/html'
 // content type and the github.com/gobuffalo/plush
 // package for templating. If more than 1 file is provided
@@ -19,9 +21,10 @@ func Plain(names ...string) Renderer {
 // be placed into the "layout" using "<%= yield %>".
 func (e *Engine) Plain(names ...string) Renderer {
 	hr := &templateRenderer{
-		Engine:      e,
-		contentType: "text/plain; charset=utf-8",
-		names:       names,
+		Engine:         e,
+		contentType:    "text/plain; charset=utf-8",
+		names:          names,
+		reloadManifest: os.Getenv("GO_ENV") != "production",
 	}
 	return hr
 }
