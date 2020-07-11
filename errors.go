@@ -101,17 +101,19 @@ func (a *App) defaultErrorMiddleware(next Handler) Handler {
 		if err == nil {
 			return nil
 		}
-		status := http.StatusInternalServerError
-		// unpack root cause and check for HTTPError
-		cause := errx.Unwrap(err)
-		if h, ok := cause.(HTTPError); ok {
-			status = h.Status
-		}
+
 		payload := events.Payload{
 			"context": c,
 			"app":     a,
 		}
 		events.EmitError(events.ErrGeneral, err, payload)
+
+		// unpack root cause and check for HTTPError
+		status := http.StatusInternalServerError
+		cause := errx.Unwrap(err)
+		if h, ok := cause.(HTTPError); ok {
+			status = h.Status
+		}
 
 		eh := a.ErrorHandlers.Get(status)
 		err = eh(status, err, c)
